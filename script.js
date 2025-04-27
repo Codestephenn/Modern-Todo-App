@@ -580,4 +580,62 @@ document.addEventListener('DOMContentLoaded', function() {
     tagsContainer = document.getElementById('tags-container');
     tagsSelector = document.getElementById('tags-selector');
     aiModal = document.getElementById('ai-modal');
-    aiAssistantBtn = do
+    aiAssistantBtn = document.getElementById('ai-assistant-btn');
+    closeAIModal = document.getElementById('close-ai-modal');
+    aiSendBtn = document.getElementById('ai-send-btn');
+    
+    // Initialize state
+    tasks = getLocalStorage('tasks');
+    tags = getLocalStorage('tags', ['Work', 'Personal', 'Shopping', 'Health']);
+    
+    // Initialize app
+    initTheme();
+    renderTasks();
+    renderTags();
+    updateTaskCounts();
+    
+    // Event listeners
+    if (themeSwitch) themeSwitch.addEventListener('change', toggleTheme);
+    if (addTaskBtn) addTaskBtn.addEventListener('click', openAddTaskModal);
+    if (closeModalBtn) closeModalBtn.addEventListener('click', closeTaskModal);
+    if (cancelTaskBtn) cancelTaskBtn.addEventListener('click', closeTaskModal);
+    if (taskForm) taskForm.addEventListener('submit', handleTaskSubmit);
+    if (taskSearch) taskSearch.addEventListener('input', debounce(renderTasks, 300));
+    if (sortBy) sortBy.addEventListener('change', renderTasks);
+    
+    navItems.forEach(item => {
+        item.addEventListener('click', () => {
+            navItems.forEach(i => i.classList.remove('active'));
+            item.classList.add('active');
+            currentFilter = item.dataset.filter;
+            renderTasks();
+        });
+    });
+    
+    if (addTagBtn) addTagBtn.addEventListener('click', addNewTag);
+    if (newTagInput) newTagInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') addNewTag();
+    });
+    
+    // AI event listeners
+    if (aiAssistantBtn) aiAssistantBtn.addEventListener('click', openAIAssistant);
+    if (closeAIModal) closeAIModal.addEventListener('click', () => aiModal.style.display = 'none');
+    if (aiSendBtn) aiSendBtn.addEventListener('click', sendAIMessage);
+    
+    const aiUserInput = document.getElementById('ai-user-input');
+    if (aiUserInput) {
+        aiUserInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendAIMessage();
+        });
+    }
+    
+    const taskTitleInput = document.getElementById('task-title');
+    if (taskTitleInput) {
+        taskTitleInput.addEventListener('input', debounce(analyzeTaskInput, 500));
+    }
+    
+    window.addEventListener('click', (e) => {
+        if (e.target === taskModal) closeTaskModal();
+        if (e.target === aiModal) aiModal.style.display = 'none';
+    });
+});
