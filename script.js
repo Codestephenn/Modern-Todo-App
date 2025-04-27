@@ -343,7 +343,7 @@ function renderTasks() {
     const sortByValue = sortBy.value;
     
     let filteredTasks = tasks.filter(task => {
-        const matchesSearch = task.title.toLowerCase().includes(searchTerm) || 
+        const matchesSearch = (task.title && task.title.toLowerCase().includes(searchTerm)) || 
                              (task.description && task.description.toLowerCase().includes(searchTerm));
         
         const matchesFilter = 
@@ -580,4 +580,4 @@ document.addEventListener('DOMContentLoaded', function() {
     tagsContainer = document.getElementById('tags-container');
     tagsSelector = document.getElementById('tags-selector');
     aiModal = document.getElementById('ai-modal');
-    aiAssistantBtn = document.getElemen
+    aiAssistantBtn = do
